@@ -6,12 +6,23 @@ project(planning)
 ## 設定C++標準
 set(CMAKE_CXX_STANDARD 17)
 
-## 設定動態連結庫:libcommon.dll與執行檔都輸出到指定的BIN目錄下，基於Windows系統
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
-## 設定動態連結庫與執行檔都輸出到指定的BIN目錄下，基於Linux系統
-## set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
-## 靜態連結庫輸出到指定的BIN目錄下
-## set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
+# 提供文字信息
+MESSAGE(STATUS "OS is ${CMAKE_SYSTEM}")
+
+# 判別OS系統
+IF (CMAKE_SYSTEM_NAME MATCHES "Linux")
+    ## 設定動態連結庫與執行檔都輸出到指定的BIN目錄下，基於Linux系統
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
+    MESSAGE(STATUS "current platform: Linux ") 
+elseif (CMAKE_SYSTEM_NAME MATCHES "Windows")
+    ## 設定動態連結庫:libcommon.dll與執行檔都輸出到指定的BIN目錄下，基於Windows系統
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
+    MESSAGE(STATUS "current platform: Windows") 
+ELSE ()
+    ## 靜態連結庫輸出到指定的BIN目錄下
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
+    MESSAGE(STATUS "other platform: ${CMAKE_SYSTEM_NAME}") 
+ENDIF (CMAKE_SYSTEM_NAME MATCHES "Linux") 
 
 # 動態連結庫
 ## 設定源文件路徑
