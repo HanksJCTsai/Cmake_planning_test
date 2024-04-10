@@ -1,18 +1,13 @@
-cmake_minimum_required(VERSION 3.29.0)
-project(planningApp 
-    VERSION 0.0.1 
-    DESCRIPTION "Planning App" 
-    HOMEPAGE_URL "https://github.com/HanksJCTsai/Cmake_planning_test"
-    LANGUAGES CXX
-)
+# 設定
+## 設定CMake最低版本
+cmake_minimum_required(VERSION 3.22.0)
+## 設定專案名稱
+project(planning)
+## 設定C++標準
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-set(PROCESS_DIR ${PROJECT_SOURCE_DIR}/src/process)
-set(PNCMAP_DIR ${PROJECT_SOURCE_DIR}/src/pnc_map)
-
 # 提供文字信息
 MESSAGE(STATUS "OS is ${CMAKE_SYSTEM}")
+
 # 判別OS系統
 IF (CMAKE_SYSTEM_NAME MATCHES "Linux")
     ## 設定動態連結庫與執行檔都輸出到指定的BIN目錄下，基於Linux系統
@@ -30,11 +25,21 @@ ELSE ()
     MESSAGE(STATUS "other platform: ${CMAKE_SYSTEM_NAME}") 
 ENDIF (CMAKE_SYSTEM_NAME MATCHES "Linux") 
 
-# 添加子目錄
-## 添加子目錄->只要子目錄中有CMakeLists.txt文件，就可以使用add_subdirectory()函數來添加子目錄
-add_subdirectory(src)
+# 動態連結庫
+## 設定源文件路徑
+aux_source_directory(${PROJECT_SOURCE_DIR}/src SRC_LISTS)
+## 生成動態連結庫:libcommon.dll
+add_library(common SHARED ${SRC_LISTS})
+## 設定動態連結庫:libcommon.dll的頭文件路徑
+target_include_directories(common PUBLIC ${PROJECT_SOURCE_DIR}/include)
 
+# 執行檔
+## 執行編譯產生執行檔planning_main
+add_executable(planning_main planning_main.cpp)
+## 設定執行檔planning_main的頭文件路徑
+### 可執行檔planning_main與動態連結庫common共享頭文件路徑
+target_include_directories(planning_main PUBLIC ${PROJECT_SOURCE_DIR}/include)
 
-
-
-
+# 動態連結庫與執行檔的連結
+## 設定動態連結庫:common與執行檔planning_main的連結
+target_link_libraries(planning_main PUBLIC common)
