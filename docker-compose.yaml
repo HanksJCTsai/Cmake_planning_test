@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  main_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: main_app_image:0.0.1
+    container_name: main-app-container
+    working_dir: /app
+    command: ./bin/planning_main
